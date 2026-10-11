@@ -1,49 +1,34 @@
-# AI PricePilot — Türkiye giyim başlangıç sürümü
+# AI PricePilot — Türkiye giyim markaları
 
-LC Waikiki ve DeFacto ürünleri için ücretsiz Next.js fiyat kayıt paneli.
+Ücretsiz Next.js paneli: 36 marka/mağaza dizini, kullanıcı ürün listesi ve ürün bazında fiyat kontrolü. Dizinde bulunmak doğrulanmış canlı API/katalog entegrasyonu anlamına gelmez.
 
 ## Çalışan özellikler
 
-- İki gerçek ürün bağlantısı; 11 Ekim 2026 tarihli manuel gözlem fiyatları.
-- LC Waikiki: W63566Z8-2WM, açık mor tişört, gözlemlenen indirimli fiyat 199,99 TRY.
-- DeFacto: I7184AXBK81, siyah tişört, gözlemlenen fiyat 499,99 TRY.
-- Ürün ekleme/silme, mağaza/kategori/ürün kodu/renk arama.
-- Elle yeni fiyat kaydetme; önceki kayıtları koruyan tarihli fiyat geçmişi.
-- Kaynak ve tarih içeren CSV dışa aktarma.
-- Farklı markalar arasında açıkça etiketlenen benzer kategori karşılaştırması.
-- Tarayıcı localStorage kaydı; önceki demo verileri ayrı anahtarda korunur.
+- LC Waikiki, DeFacto, Koton, Mavi, Colin’s, LTB, Zara, H&M, Mango, Pull&Bear, Bershka, Stradivarius, Massimo Dutti, Oysho, İpekyol, Twist, adL, Roman, Nocturne, Beymen, Boyner, Vakko, Network, Damat Tween, D’S Damat, Altınyıldız Classics, Kiğılı, Ramsey, Avva, U.S. Polo Assn., Penti, Suwen, adidas, Nike, Puma ve Decathlon.
+- Marka arama/grup filtreleri, resmî mağaza bağlantıları ve markadan ürün formuna geçiş.
+- Her markada kullanıcı ürün ekleme/silme ve tarihli manuel fiyat geçmişi.
+- Ürün kartından otomatik sayfa fiyatı kontrolü. Sonuç ve kaynak kontrol zamanı açıkça gösterilir; erişim engeli veya belirsiz fiyat önceki kaydı değiştirmez.
+- Herhangi iki farklı mağazadan aynı kategoride ürün karşılaştırması; aynı ürün oldukları iddia edilmez.
+- CSV dışa aktarımı, formül enjeksiyonu kaçışları; tarayıcı localStorage kalıcılığı.
+- Mevcut v1 kayıtları korunur. Koton başlangıç kaydı mevcut listelere bir defa eklenir; 500 ürün sınırında eklenmez. Eski demo anahtarı değiştirilmez.
 
-## Veri sınırları
+## Veri kapsamı
 
-Bu sürüm iki seçili üründe sayfa açıkken otomatik fiyat kontrolü yapar. Başlangıç fiyatları resmi mağaza sayfalarında tarayıcı ile bir kez gözlemlenmiştir; fiyatlar zaman içinde değişebilir. Diğer ürünlerin sonraki kayıtları kullanıcı tarafından elle girilir. Beden bazlı stok ve satın alınabilirlik doğrulanmadı. Renk, kumaş ve kalite farklı olabilir. Kargo, sepete özel kampanya ve kuponlar karşılaştırmaya dahil değildir. Tek kayıt gerçek geçmiş grafik olarak sunulmaz.
+Başlangıçta üç resmî ürün sayfasının 11 Ekim 2026 tarihli kayıtları bulunur: LC Waikiki W63566Z8-2WM 199,99 TRY; DeFacto I7184AXBK81 499,99 TRY; Koton 7WAM10002MK beyaz tişört 299,99 TRY. Başlangıç ürünleri açılışta ve sayfa görünürken 30 dakikada bir kontrol edilir. Diğer eklenen ürünler karttaki düğmeyle kontrol edilir.
 
-Genel mağaza kataloğu için resmî fiyat akışı bağlı değildir. Sayfa kapalıyken zamanlanmış takip ve e-posta bildirimi çalışmaz. Gerçek yapay zekâ, ödeme, kimlik doğrulama ve sunucu veritabanı yoktur. API anahtarı ve ücretli servis gerekmez.
+Fiyat okuyucu yalnızca ürünün eşleşen URL'sine ait JSON-LD Product/Offer içindeki tek geçerli TRY fiyatını kabul eder. Yanlış ürün, belirsiz/varyant fiyatları, diğer para birimleri, erişim engelleri ve fiyat içermeyen sayfalar reddedilir. Her markanın her ürününde çalışması garanti değildir; mağaza sayfa yapısı/erişim politikası değişebilir. Bir üründe başarı tüm marka kataloğunu doğrulamaz. DeFacto önceki Vercel üretim testinde HTTP 403 döndürmüştür. Diğer markalar başlangıçta "henüz doğrulanmadı" durumundadır.
 
-## Çalıştırma
+36 giriş Türkiye’deki bütün markaların eksiksiz listesi değildir. Boyner/Beymen gibi çok markalı mağazalar mağaza olarak takip edilir. Kargo, kupon, sepete özel kampanyalar, kalite, beden bazlı stok ve satın alınabilirlik doğrulanmaz. Resmî ortaklık, API/feed, tüm katalog aktarımı, yapay zekâ, ödeme, kullanıcı hesabı, sunucu veritabanı veya e-posta bildirimleri bağlı değildir. Sayfa kapalıyken zamanlanmış takip yoktur. Ücretli servis veya API anahtarı gerekmez.
 
-Node.js 22 veya 24 LTS önerilir.
+## API ve istek sınırları
 
-```sh
-npm ci
-npm run dev
-npm run build
-npm start
-```
+GET /api/prices: üç sabit başlangıç ürününü kontrol eder; 30 dakika CDN önbelleği.
+POST /api/prices: {id,store,url} ile tek ürün; uygulama origin kontrolü ve sabit resmî hostname listesi, HTTPS/standart port, kullanıcı adı/parola reddi, yönlendirme reddi, 12 saniye süre, 2 MB kaynak/3 KB istek sınırı. Host ve marka eşleşmeli; kullanıcıya başka ağ hedefleri sunulmaz.
 
-## Yayın
+Sonuçlar (hatalar dahil) sunucu örneğinde 30 dakika, en fazla 300 URL için önbellekte tutulur; eşzamanlı aynı URL istekleri birleştirilir. POST sunucu örneğinde dakikada 60 ve en fazla 8 aktif isteğe sınırlandırılır. Bu bellek içi sınırlar dağıtık kota değildir; sunucu yeniden başladığında sıfırlanır. Büyük/çok kullanıcılı kullanım için kalıcı dağıtık kota ve izinli mağaza veri akışı gerekir. Tarihler gerçek kontrol zamanını korur.
 
-https://ai-pricepilot.vercel.app
+## Çalıştırma ve yayın
 
-Vercel Hobby çalışma alanı `murat13`, GitHub `kejan2514/ai-pricepilot`, üretim dalı `main`. GitHub'a gönderilen değişiklikler Vercel tarafından dağıtılır. Ücretli plan veya servis açmayın. Ortam değişkeni gerekmez.
+Node.js 22/24 LTS: npm ci, npm run dev, npm run build, npm start.
 
-## Otomatik veri için gerekli sonraki aşama
-
-Mağazadan kullanım yetkisi olan API/feed erişimi gerekir. Akış bağlandığında ürün kodu, varyant, gerçek kontrol zamanı, stok ve hata durumu saklanmalı; başarısız istek eski fiyatı güncel gibi göstermemelidir. Sunucu tarafında URL allowlist, SSRF koruması, veri doğrulama, istek sınırı ve uygun kalıcı kayıt gerekir. Bu işlevler henüz uygulanmadı.
-
-## Otomatik fiyat kontrolü (yeni)
-
-`/api/prices` başlangıç listesindeki iki sabit ürün URL'sini sunucudan kontrol eder. Kullanıcı URL'si sunucuya verilmez; yönlendirmeler reddedilir, 12 saniye zaman aşımı ve 2 MB sınırı uygulanır. Yalnızca eşleşen ürün URL'sinin TRY para birimindeki tek, geçerli JSON-LD Offer fiyatı kabul edilir. Belirsiz fiyat, engellenen erişim veya hata eski kaydı değiştirmez. Beden stokları bu kontrolden çıkarılmaz.
-
-Panel açılışta ve görünürken 30 dakikada bir kontrolü çağırır. Vercel önbelleği 30 dakikadır; gerçek kaynak kontrol zamanı panelde gösterilir. Sayfa kapalıyken arka plan cron'u yoktur. Fiyat geçmişi bu tarayıcıda saklanır. Resmî mağaza API entegrasyonu veya ticari veri akışı değildir; mağaza sayfa yapısı/erişim politikası değişirse kontrol başarısız olabilir.
-
-Genel katalog entegrasyonu ve e-posta bildirimleri halen bağlı değildir.
+https://ai-pricepilot.vercel.app — Vercel Hobby murat13, GitHub kejan2514/ai-pricepilot main. Ortam değişkeni ve ücretli hizmet gerekmiyor. Kripto projelerine dokunulmaz.

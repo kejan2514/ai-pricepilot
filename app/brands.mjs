@@ -1,0 +1,12 @@
+// Exact official hosts only. A directory entry is not a verified live integration.
+const entries=[
+ ['LC Waikiki','lcw.com','Günlük giyim'],['DeFacto','defacto.com.tr','Günlük giyim'],['Koton','koton.com','Günlük giyim'],['Mavi','mavi.com','Denim'],["Colin’s",'colins.com.tr','Denim'],['LTB','ltbjeans.com','Denim','/tr-TR'],
+ ['Zara','zara.com','Uluslararası','/tr/'],['H&M','hm.com','Uluslararası','https://www2.hm.com/tr_tr/index.html'],['Mango','shop.mango.com','Uluslararası','/tr/tr'],['Pull&Bear','pullandbear.com','Uluslararası','/tr/'],['Bershka','bershka.com','Uluslararası','/tr/'],['Stradivarius','stradivarius.com','Uluslararası','/tr/'],['Massimo Dutti','massimodutti.com','Uluslararası','/tr/'],['Oysho','oysho.com','Spor ve iç giyim','/tr/'],
+ ['İpekyol','ipekyol.com.tr','Kadın giyim'],['Twist','twist.com.tr','Kadın giyim'],['adL','adl.com.tr','Kadın giyim'],['Roman','roman.com.tr','Kadın giyim'],['Nocturne','nocturne.com.tr','Kadın giyim'],['Beymen','beymen.com','Premium ve çok marka'],['Boyner','boyner.com.tr','Premium ve çok marka'],['Vakko','vakko.com','Premium ve çok marka'],['Network','network.com.tr','Premium ve çok marka'],
+ ['Damat Tween','damat.com','Erkek giyim'],["D’S Damat",'dsdamat.com','Erkek giyim'],['Altınyıldız Classics','altinyildizclassics.com','Erkek giyim'],['Kiğılı','kigili.com','Erkek giyim'],['Ramsey','ramsey.com.tr','Erkek giyim'],['Avva','avva.com.tr','Erkek giyim'],['U.S. Polo Assn.','tr.uspoloassn.com','Günlük giyim'],
+ ['Penti','penti.com','Spor ve iç giyim','/tr/'],['Suwen','suwen.com.tr','Spor ve iç giyim'],['adidas','adidas.com.tr','Spor ve iç giyim'],['Nike','nike.com','Spor ve iç giyim','/tr/'],['Puma','tr.puma.com','Spor ve iç giyim'],['Decathlon','decathlon.com.tr','Spor ve iç giyim']
+];
+export const brands=entries.map(([name,host,group,path='/'])=>({name,group,url:path.startsWith('https:')?path:`https://${host.startsWith('shop.')||host.startsWith('tr.')?host:'www.'+host}${path}`,hosts:host==='hm.com'?['hm.com','www.hm.com','www2.hm.com']:host.startsWith('shop.')||host.startsWith('tr.')?[host]:[host,'www.'+host]}));
+export function brandForUrl(value){try{const u=new URL(value);if(u.protocol!=='https:'||u.username||u.password||u.port||value.length>1000)return null;return brands.find(b=>b.hosts.includes(u.hostname))||null;}catch{return null;}}
+export function normalizeProductUrl(value){const brand=brandForUrl(value);if(!brand)return null;const u=new URL(value);u.hash='';return u.href;}
+export function matchesBrand(name,url){return brandForUrl(url)?.name===name;}
