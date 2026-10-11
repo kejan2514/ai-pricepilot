@@ -15,9 +15,9 @@ LC Waikiki ve DeFacto ürünleri için ücretsiz Next.js fiyat kayıt paneli.
 
 ## Veri sınırları
 
-Bu sürüm otomatik fiyat takip hizmeti değildir. Başlangıç fiyatları resmi mağaza sayfalarında tarayıcı ile bir kez gözlemlenmiştir; fiyatlar zaman içinde değişebilir. Sonraki kayıtlar kullanıcı tarafından elle girilir. Beden bazlı stok ve satın alınabilirlik doğrulanmadı. Renk, kumaş ve kalite farklı olabilir. Kargo, sepete özel kampanya ve kuponlar karşılaştırmaya dahil değildir. Tek kayıt gerçek geçmiş grafik olarak sunulmaz.
+Bu sürüm iki seçili üründe sayfa açıkken otomatik fiyat kontrolü yapar. Başlangıç fiyatları resmi mağaza sayfalarında tarayıcı ile bir kez gözlemlenmiştir; fiyatlar zaman içinde değişebilir. Diğer ürünlerin sonraki kayıtları kullanıcı tarafından elle girilir. Beden bazlı stok ve satın alınabilirlik doğrulanmadı. Renk, kumaş ve kalite farklı olabilir. Kargo, sepete özel kampanya ve kuponlar karşılaştırmaya dahil değildir. Tek kayıt gerçek geçmiş grafik olarak sunulmaz.
 
-Ücretsiz, herkese açık ve kullanım yetkisi doğrulanmış bir mağaza fiyat akışı bulunmadığı için otomatik yenileme, zamanlanmış takip ve e-posta bildirimi bağlı değildir. Gerçek yapay zekâ, ödeme, kimlik doğrulama ve sunucu veritabanı yoktur. API anahtarı ve ücretli servis gerekmez.
+Genel mağaza kataloğu için resmî fiyat akışı bağlı değildir. Sayfa kapalıyken zamanlanmış takip ve e-posta bildirimi çalışmaz. Gerçek yapay zekâ, ödeme, kimlik doğrulama ve sunucu veritabanı yoktur. API anahtarı ve ücretli servis gerekmez.
 
 ## Çalıştırma
 
@@ -39,3 +39,11 @@ Vercel Hobby çalışma alanı `murat13`, GitHub `kejan2514/ai-pricepilot`, üre
 ## Otomatik veri için gerekli sonraki aşama
 
 Mağazadan kullanım yetkisi olan API/feed erişimi gerekir. Akış bağlandığında ürün kodu, varyant, gerçek kontrol zamanı, stok ve hata durumu saklanmalı; başarısız istek eski fiyatı güncel gibi göstermemelidir. Sunucu tarafında URL allowlist, SSRF koruması, veri doğrulama, istek sınırı ve uygun kalıcı kayıt gerekir. Bu işlevler henüz uygulanmadı.
+
+## Otomatik fiyat kontrolü (yeni)
+
+`/api/prices` başlangıç listesindeki iki sabit ürün URL'sini sunucudan kontrol eder. Kullanıcı URL'si sunucuya verilmez; yönlendirmeler reddedilir, 12 saniye zaman aşımı ve 2 MB sınırı uygulanır. Yalnızca eşleşen ürün URL'sinin TRY para birimindeki tek, geçerli JSON-LD Offer fiyatı kabul edilir. Belirsiz fiyat, engellenen erişim veya hata eski kaydı değiştirmez. Beden stokları bu kontrolden çıkarılmaz.
+
+Panel açılışta ve görünürken 30 dakikada bir kontrolü çağırır. Vercel önbelleği 30 dakikadır; gerçek kaynak kontrol zamanı panelde gösterilir. Sayfa kapalıyken arka plan cron'u yoktur. Fiyat geçmişi bu tarayıcıda saklanır. Resmî mağaza API entegrasyonu veya ticari veri akışı değildir; mağaza sayfa yapısı/erişim politikası değişirse kontrol başarısız olabilir.
+
+Genel katalog entegrasyonu ve e-posta bildirimleri halen bağlı değildir.
